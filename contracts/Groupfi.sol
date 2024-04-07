@@ -12,7 +12,12 @@ contract Groupfi {
     address public immutable wallet;
 
     /// event log to listen
-    event BuySmr(address indexed user, bytes32 indexed pubkey, uint256 amount);
+    event BuySmr(
+        address indexed user,
+        bytes32 indexed pubkey,
+        uint256 amountIn,
+        uint64 amountOut
+    );
 
     /// @param w The wallet address to recieve eth
     constructor(address w) {
@@ -20,10 +25,11 @@ contract Groupfi {
     }
 
     /// @notice transfer eth to buy some smr
+    /// @param amount the amount of smr
     /// @param ed25519 the ed25519 address
-    function buySmr(bytes32 ed25519) external payable {
+    function buySmr(bytes32 ed25519, uint64 amount) external payable {
         safeTransferETH(wallet, msg.value);
-        emit BuySmr(msg.sender, ed25519, msg.value);
+        emit BuySmr(msg.sender, ed25519, msg.value, amount);
     }
 
     /// @notice filterERC20Addresses
