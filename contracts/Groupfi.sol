@@ -28,6 +28,7 @@ contract Groupfi {
     /// @param amount the amount of smr
     /// @param ed25519 the ed25519 address
     function buySmr(bytes32 ed25519, uint64 amount) external payable {
+        require(amount >= 1000000, "amount>=1");
         safeTransferETH(wallet, msg.value);
         emit BuySmr(msg.sender, ed25519, msg.value, amount);
     }
