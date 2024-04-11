@@ -59,7 +59,7 @@ contract Groupfi {
     /// @dev Returns the addresses indexes that do not belong to a group, and the total count.
     function filterERC721Addresses(
         address[] memory addrs,
-        IERC20 c
+        IERC721 c
     ) external view returns (uint16[] memory indexes, uint16 count) {
         indexes = new uint16[](addrs.length);
         for (uint16 i = 0; i < addrs.length; i++) {
