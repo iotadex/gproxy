@@ -23,4 +23,9 @@ contract GroupNFT is ERC721, Ownable {
             revert ERC721InvalidOwner(msg.sender);
         super._burn(tokenId);
     }
+
+    function _baseURI() internal pure override returns (string memory) {
+        return
+            "ipfs://bafybeidfvzjbovlskk6gw3vtubg4h4adn3k6bms7xwd4ixzl4wh2rfav24/";
+    }
 }
