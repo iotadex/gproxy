@@ -6,7 +6,7 @@ import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 /// @title Groupfi contract, help groupfi to supply some data servies
 contract Groupfi {
-    uint16 public constant PERCENT = 10000;
+    // uint16 public constant PERCENT = 10000;
 
     /// the wallet address to recieve eth token
     address public immutable wallet;
@@ -36,14 +36,14 @@ contract Groupfi {
     /// @notice filterERC20Addresses
     /// @param addrs addresses to filter
     /// @param c ERC20 contract address
-    /// @param threshold the threshold value of erc20's balance, percent
+    /// @param threshold the threshold value of erc20's balance
     /// @dev Returns the addresses indexes that do not belong to a group, and the total count.
     function filterERC20Addresses(
         address[] memory addrs,
         IERC20 c,
         uint256 threshold
     ) external view returns (uint16[] memory indexes, uint16 count) {
-        threshold = (c.totalSupply() * threshold) / PERCENT;
+        // threshold = (c.totalSupply() * threshold) / PERCENT;
         indexes = new uint16[](addrs.length);
         for (uint16 i = 0; i < addrs.length; i++) {
             if (c.balanceOf(addrs[i]) < threshold) {
@@ -74,7 +74,7 @@ contract Groupfi {
     /// @param adds addresses that be added to the group
     /// @param subs addresses that be removed from the group
     /// @param c ERC20 contract address
-    /// @param threshold the threshold value of erc20's balance, percent
+    /// @param threshold the threshold value of erc20's balance
     /// @dev Returns the check result. 0 is true, 1 is adds error and -1 is subs error.
     function checkERC20Group(
         address[] memory adds,
@@ -82,7 +82,7 @@ contract Groupfi {
         IERC20 c,
         uint256 threshold
     ) external view returns (int8 res) {
-        threshold = (c.totalSupply() * threshold) / PERCENT;
+        //threshold = (c.totalSupply() * threshold) / PERCENT;
         for (uint256 i = 0; i < adds.length; i++) {
             uint256 a = c.balanceOf(adds[i]);
             if (a < threshold) {
