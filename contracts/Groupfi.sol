@@ -33,6 +33,23 @@ contract Groupfi {
         emit BuySmr(msg.sender, ed25519, msg.value, amount);
     }
 
+    /// @notice filterEthAddresses
+    /// @param addrs addresses to filter
+    /// @param threshold the threshold value of eth balance
+    /// @dev Returns the addresses indexes that do not belong to a group, and the total count.
+    function filterEthAddresses(
+        address[] memory addrs,
+        uint256 threshold
+    ) external view returns (uint16[] memory indexes, uint16 count) {
+        indexes = new uint16[](addrs.length);
+        for (uint16 i = 0; i < addrs.length; i++) {
+            if (addrs[i].balance < threshold) {
+                indexes[count] = i;
+                count++;
+            }
+        }
+    }
+
     /// @notice filterERC20Addresses
     /// @param addrs addresses to filter
     /// @param c ERC20 contract address
@@ -68,6 +85,30 @@ contract Groupfi {
                 count++;
             }
         }
+    }
+
+    /// @notice checkEthGroup
+    /// @param adds addresses that be added to the group
+    /// @param subs addresses that be removed from the group
+    /// @param threshold the threshold value of eth balance
+    /// @dev Returns the check result. 0 is true, 1 is adds error and -1 is subs error.
+    function checkEthGroup(
+        address[] memory adds,
+        address[] memory subs,
+        uint256 threshold
+    ) external view returns (int8 res) {
+        for (uint256 i = 0; i < adds.length; i++) {
+            if (adds[i].balance < threshold) {
+                return 1;
+            }
+        }
+
+        for (uint256 i = 0; i < subs.length; i++) {
+            if (subs[i].balance >= threshold) {
+                return -1;
+            }
+        }
+        return 0;
     }
 
     /// @notice filterERC20Addresses
