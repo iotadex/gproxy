@@ -3,6 +3,7 @@ pragma solidity >=0.8.0;
 
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {IERC721} from "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import {IERC1155} from "@openzeppelin/contracts/token/ERC1155/IERC1155.sol";
 
 /// @title Groupfi contract, help groupfi to supply some data servies
 contract Groupfi {
@@ -87,6 +88,26 @@ contract Groupfi {
         }
     }
 
+    /// @notice filterERC20Addresses
+    /// @param addrs addresses to filter
+    /// @param c ERC721 contract address
+    /// @param id the id of user's token
+    /// @dev Returns the addresses indexes that do not belong to a group, and the total count.
+    function filterERC1155Addresses(
+        address[] memory addrs,
+        IERC1155 c,
+        uint256 id,
+        uint256 threshold
+    ) external view returns (uint16[] memory indexes, uint16 count) {
+        indexes = new uint16[](addrs.length);
+        for (uint16 i = 0; i < addrs.length; i++) {
+            if (c.balanceOf(addrs[i], id) < threshold) {
+                indexes[count] = i;
+                count++;
+            }
+        }
+    }
+
     /// @notice checkEthGroup
     /// @param adds addresses that be added to the group
     /// @param subs addresses that be removed from the group
@@ -123,7 +144,6 @@ contract Groupfi {
         IERC20 c,
         uint256 threshold
     ) external view returns (int8 res) {
-        //threshold = (c.totalSupply() * threshold) / PERCENT;
         for (uint256 i = 0; i < adds.length; i++) {
             uint256 a = c.balanceOf(adds[i]);
             if (a < threshold) {
@@ -157,6 +177,36 @@ contract Groupfi {
         }
         for (uint256 i = 0; i < subs.length; i++) {
             if (c.balanceOf(adds[i]) > 0) {
+                return -1;
+            }
+        }
+        return 0;
+    }
+
+    /// @notice filterERC20Addresses
+    /// @param adds addresses that be added to the group
+    /// @param subs addresses that be removed from the group
+    /// @param c ERC20 contract address
+    /// @param id the id of user's token
+    /// @param threshold the threshold value of erc20's balance
+    /// @dev Returns the check result. 0 is true, 1 is adds error and -1 is subs error.
+    function checkERC1155Group(
+        address[] memory adds,
+        address[] memory subs,
+        IERC1155 c,
+        uint256 id,
+        uint256 threshold
+    ) external view returns (int8 res) {
+        for (uint256 i = 0; i < adds.length; i++) {
+            uint256 a = c.balanceOf(adds[i], id);
+            if (a < threshold) {
+                return 1;
+            }
+        }
+
+        for (uint256 i = 0; i < subs.length; i++) {
+            uint256 a = c.balanceOf(subs[i], id);
+            if (a >= threshold) {
                 return -1;
             }
         }
