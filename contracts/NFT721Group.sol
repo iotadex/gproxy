@@ -18,6 +18,16 @@ contract GroupNFT is ERC721, Ownable {
         super._safeMint(_to, _tokenId);
     }
 
+    function multiMint(
+        address _to,
+        uint256 _tokenIdBegin,
+        uint256 _tokenIdEnd
+    ) external onlyOwner {
+        for (uint256 id = _tokenIdBegin; id <= _tokenIdEnd; id++) {
+            super._safeMint(_to, id);
+        }
+    }
+
     function burn(uint256 tokenId) external {
         if (msg.sender != super._ownerOf(tokenId))
             revert ERC721InvalidOwner(msg.sender);
